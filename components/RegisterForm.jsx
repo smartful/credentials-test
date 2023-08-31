@@ -8,12 +8,36 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name || !email || !password) {
       setError("All fields are mandatory.");
       return;
+    }
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        setName("");
+        setEmail("");
+        setPassword("");
+      } else {
+        console.warn("User Registration failed");
+      }
+    } catch (error) {
+      console.error("Error during registration : ", error);
     }
   };
 
